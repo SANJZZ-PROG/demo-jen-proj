@@ -1,11 +1,27 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'nodejs'
+    }
+
     stages {
 
-        stage('Build') {
+        stage('Clone Repository') {
             steps {
-                echo 'Building application...'
+                echo 'Cloning repository...'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Build React App') {
+            steps {
+                sh 'npm run build'
             }
         }
 
@@ -17,7 +33,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'Deploying application...'
+                echo 'Deployment stage...'
             }
         }
     }
