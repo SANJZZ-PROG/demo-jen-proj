@@ -13,8 +13,7 @@ steps:
       - 'push'
       - 'us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:$SHORT_SHA'
 
-  # Step 3: Create a Cloud Deploy release
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+ - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       - 'deploy'
@@ -23,6 +22,7 @@ steps:
       - 'release-$SHORT_SHA'
       - '--delivery-pipeline=shopeasy-pipeline'
       - '--region=us-central1'
+      - '--skaffold-file=skaffold.yaml'
       - '--images=shopeasy-app=us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:$SHORT_SHA'
 
 images:
