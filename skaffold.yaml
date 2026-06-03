@@ -1,0 +1,22 @@
+apiVersion: skaffold/v4beta7
+kind: Config
+metadata:
+  name: shopeasy-app
+deploy:
+  cloudrun: {}
+profiles:
+  - name: dev
+    deploy:
+      cloudrun:
+        projectid: sanjuktha-497610
+        region: us-central1
+  - name: staging
+    deploy:
+      cloudrun:
+        projectid: sanjuktha-497610
+        region: us-central1
+  - name: prod
+    deploy:
+      cloudrun:
+        projectid: sanjuktha-497610
+        region: us-central1
