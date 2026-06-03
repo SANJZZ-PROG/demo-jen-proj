@@ -2,8 +2,22 @@ apiVersion: skaffold/v4beta7
 kind: Config
 metadata:
   name: shopeasy-app
-manifests:
-  rawYaml:
-    - cloudrun-service.yaml
-deploy:
-  cloudrun: {}
+profiles:
+  - name: dev
+    manifests:
+      rawYaml:
+        - cloudrun-service.yaml
+    deploy:
+      cloudrun: {}
+  - name: staging
+    manifests:
+      rawYaml:
+        - cloudrun-service.yaml
+    deploy:
+      cloudrun: {}
+  - name: prod
+    manifests:
+      rawYaml:
+        - cloudrun-service.yaml
+    deploy:
+      cloudrun: {}
