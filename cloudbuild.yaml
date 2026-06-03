@@ -13,7 +13,8 @@ steps:
       - 'push'
       - 'us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:$SHORT_SHA'
 
- - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  # Step 3: Create a Cloud Deploy release
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       - 'deploy'
