@@ -27,3 +27,6 @@ steps:
 
 images:
   - 'us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:$SHORT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
