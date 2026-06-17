@@ -1,40 +1,55 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'nodejs'
+    environment {
+        PROJECT_ID   = 'project-7910093f-7276-4858-97d'
+        REGION       = 'us-central1'
+        REPO         = 'us-central1-docker.pkg.dev/project-7910093f-7276-4858-97d/my-app-repo'
+        SERVICE_NAME = 'my-app'
+        IMAGE        = "${REPO}/my-app:${BUILD_NUMBER}"
     }
 
     stages {
 
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                echo 'Cloning repository...'
+                checkout scm
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Build Docker Image') {
             steps {
-                sh 'npm install'
+                sh "docker build -t ${IMAGE} ."
             }
         }
 
-        stage('Build React App') {
+        stage('Push to Artifact Registry') {
             steps {
-                sh 'npm run build'
+                sh """
+                    gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+                    docker push ${IMAGE}
+                """
             }
         }
 
-        stage('Test') {
+        stage('Deploy to Cloud Run') {
             steps {
-                echo 'Running tests...'
+                sh """
+                    gcloud run deploy ${SERVICE_NAME} \
+                        --image=${IMAGE} \
+                        --region=${REGION} \
+                        --platform=managed \
+                        --allow-unauthenticated \
+                        --port=8080 \
+                        --project=${PROJECT_ID}
+                """
             }
         }
+    }
 
-        stage('Deploy') {
-            steps {
-                echo 'Deployment stage...'
-            }
-        }
+    post {
+        success { echo "✅ Deployed to Cloud Run!" }
+        failure { echo "❌ Build failed." }
+        always  { sh "docker rmi ${IMAGE} || true" }
     }
 }
