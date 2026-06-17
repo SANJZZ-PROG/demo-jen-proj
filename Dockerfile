@@ -5,3 +5,7 @@ RUN npm ci --only=production
 COPY . .
 EXPOSE 8080
 CMD ["node", "app.js"]
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
