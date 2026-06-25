@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopeasy-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shopeasy-app
+  template:
+    metadata:
+      labels:
+        app: shopeasy-app
+    spec:
+      containers:
+      - name: shopeasy-app
+        image: us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:latest
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shopeasy-service
+spec:
+  selector:
+    app: shopeasy-app
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: LoadBalancer
