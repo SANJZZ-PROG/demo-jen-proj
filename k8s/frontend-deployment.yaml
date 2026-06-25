@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: shopeasy-app
-        image: us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:latest
+        image: us-central1-docker.pkg.dev/sanjuktha-497610/shapeasy-repo/shopeasy-app:latest
         ports:
         - containerPort: 8080
 ---
