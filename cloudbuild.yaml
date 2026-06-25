@@ -1,30 +1,50 @@
 steps:
-  # Step 1: Build the Docker image
+
   - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-image'
     args:
       - 'build'
       - '-t'
       - 'us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:$SHORT_SHA'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:latest'
       - '.'
 
-  # Step 2: Push the image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-image'
     args:
       - 'push'
-      - 'us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:$SHORT_SHA'
+      - '--all-tags'
+      - 'us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app'
+    waitFor: ['build-image']
 
-  # Step 3: Create a Cloud Deploy release
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'get-credentials'
+    args: ['cluster-info']
+    env:
+      - 'CLOUDSDK_COMPUTE_REGION=us-central1'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=private-gke'
+    waitFor: ['push-image']
+
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'apply-k8s'
+    args: ['apply', '-f', 'k8s/frontend-deployment.yaml']
+    env:
+      - 'CLOUDSDK_COMPUTE_REGION=us-central1'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=private-gke'
+    waitFor: ['get-credentials']
+
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'rollout'
     args:
-      - 'deploy'
-      - 'releases'
-      - 'create'
-      - 'release-$SHORT_SHA'
-      - '--delivery-pipeline=shopeasy-pipeline'
-      - '--region=us-central1'
-      - '--skaffold-file=skaffold.yaml'
-      - '--images=shopeasy-app=us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:$SHORT_SHA'
+      - 'set'
+      - 'image'
+      - 'deployment/shopeasy-app'
+      - 'shopeasy-app=us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:$SHORT_SHA'
+    env:
+      - 'CLOUDSDK_COMPUTE_REGION=us-central1'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=private-gke'
+    waitFor: ['apply-k8s']
 
 images:
   - 'us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:$SHORT_SHA'
