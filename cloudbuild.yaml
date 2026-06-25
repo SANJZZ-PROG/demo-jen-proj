@@ -5,9 +5,9 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:$SHORT_SHA'
+      - 'us-central1-docker.pkg.dev/project-7910093f-7276-4858-97d/shapeasy-repo/shopeasy-app:$SHORT_SHA'
       - '-t'
-      - 'us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:latest'
+      - 'us-central1-docker.pkg.dev/project-7910093f-7276-4858-97d/shapeasy-repo/shopeasy-app:latest'
       - '.'
 
   - name: 'gcr.io/cloud-builders/docker'
@@ -15,7 +15,7 @@ steps:
     args:
       - 'push'
       - '--all-tags'
-      - 'us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app'
+      - 'us-central1-docker.pkg.dev/project-7910093f-7276-4858-97d/shapeasy-repo/shopeasy-app'
     waitFor: ['build-image']
 
   - name: 'gcr.io/cloud-builders/kubectl'
@@ -40,14 +40,14 @@ steps:
       - 'set'
       - 'image'
       - 'deployment/shopeasy-app'
-      - 'shopeasy-app=us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:$SHORT_SHA'
+      - 'shopeasy-app=us-central1-docker.pkg.dev/project-7910093f-7276-4858-97d/shapeasy-repo/shopeasy-app:$SHORT_SHA'
     env:
       - 'CLOUDSDK_COMPUTE_REGION=us-central1'
       - 'CLOUDSDK_CONTAINER_CLUSTER=private-gke'
     waitFor: ['apply-k8s']
 
 images:
-  - 'us-central1-docker.pkg.dev/sanjuktha-497610/shopeasy-repo/shopeasy-app:$SHORT_SHA'
+  - 'us-central1-docker.pkg.dev/project-7910093f-7276-4858-97d/shapeasy-repo/shopeasy-app:$SHORT_SHA'
 
 options:
   logging: CLOUD_LOGGING_ONLY
