@@ -22,16 +22,16 @@ steps:
     id: 'get-credentials'
     args: ['cluster-info']
     env:
-      - 'CLOUDSDK_COMPUTE_REGION=us-central1'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=private-gke'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=private-gke-01'
     waitFor: ['push-image']
 
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'apply-k8s'
     args: ['apply', '-f', 'k8s/frontend-deployment.yaml']
     env:
-      - 'CLOUDSDK_COMPUTE_REGION=us-central1'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=private-gke'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=private-gke-01'
     waitFor: ['get-credentials']
 
   - name: 'gcr.io/cloud-builders/kubectl'
@@ -42,8 +42,8 @@ steps:
       - 'deployment/shopeasy-app'
       - 'shopeasy-app=us-central1-docker.pkg.dev/project-7910093f-7276-4858-97d/shapeasy-repo/shopeasy-app:$SHORT_SHA'
     env:
-      - 'CLOUDSDK_COMPUTE_REGION=us-central1'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=private-gke'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=private-gke-01'
     waitFor: ['apply-k8s']
 
 images:
