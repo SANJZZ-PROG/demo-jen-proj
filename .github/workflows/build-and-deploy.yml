@@ -18,7 +18,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: projects/291021065165/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
-          service_account: [email protected]
+          service_account: "[email protected]"
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
